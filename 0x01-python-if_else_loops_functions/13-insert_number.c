@@ -1,13 +1,8 @@
-/*
- * File: 13-insert_number.c
- * Auth: Bongekile
- */
-
 #include "lists.h"
 
 /**
  * insert_node - Inserts a number into a sorted singly-linked list.
- * @head: A pointer the head of the linked list.
+ * @head: A pointer to the head of the linked list.
  * @number: The number to insert.
  *
  * Return: If the function fails - NULL.
@@ -15,25 +10,35 @@
  */
 listint_t *insert_node(listint_t **head, int number)
 {
-	listint_t *node = *head, *new;
+    listint_t *new_node, *current;
 
-	new = malloc(sizeof(listint_t));
-	if (new == NULL)
-		return (NULL);
-	new->n = number;
+    /* Allocate memory for the new node */
+    new_node = malloc(sizeof(listint_t));
+    if (new_node == NULL)
+        return (NULL);
 
-	if (node == NULL || node->n >= number)
-	{
-		new->next = node;
-		*head = new;
-		return (new);
-	}
+    /* Initialize the new node */
+    new_node->n = number;
+    new_node->next = NULL;
 
-	while (node && node->next && node->next->n < number)
-		node = node->next;
+    /* Special case: If the list is empty or the new node should be the new head */
+    if (*head == NULL || (*head)->n >= number)
+    {
+        new_node->next = *head;
+        *head = new_node;
+        return (new_node);
+    }
 
-	new->next = node->next;
-	node->next = new;
+    /* Find the position to insert the new node */
+    current = *head;
+    while (current->next != NULL && current->next->n < number)
+    {
+        current = current->next;
+    }
 
-	return (new);
+    /* Insert the new node into the list */
+    new_node->next = current->next;
+    current->next = new_node;
+
+    return (new_node);
 }
