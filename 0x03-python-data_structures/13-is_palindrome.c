@@ -1,77 +1,34 @@
-/*
- * File: 13-is_palindrome.c
- * Auth: Bongekile Mlindwa
- */
-
 #include "lists.h"
 
-listint_t *reverse_listint(listint_t **head);
-int is_palindrome(listint_t **head);
-
 /**
- * reverse_listint - Reverses a singly-linked listint_t list.
- * @head: A pointer to the starting node of the list to reverse.
+ * palindrome - utility for is_palindrome
+ * @top: pointer to a pointer to a singly linked list
+ * @next: pointer to a singly linked list
  *
- * Return: A pointer to the head of the reversed list.
+ * Return: integer, 1 if palindrome, else 0
  */
-listint_t *reverse_listint(listint_t **head)
+int palindrome(listint_t **top, listint_t *next)
 {
-	listint_t *node = *head, *next, *prev = NULL;
+	int result = 0;
 
-	while (node)
-	{
-		next = node->next;
-		node->next = prev;
-		prev = node;
-		node = next;
-	}
+	if (next == NULL)
+		return (1);
 
-	*head = prev;
-	return (*head);
+	if (palindrome(top, next->next) && ((*top)->n == next->n))
+		result = 1;
+
+	*top = (*top)->next;
+
+	return (result);
 }
 
 /**
- * is_palindrome - Checks if a singly linked list is a palindrome.
- * @head: A pointer to the head of the linked list.
+ * is_palindrome - check if a singly linked list is a palindrome
+ * @head: linked list double pointer
  *
- * Return: If the linked list is not a palindrome - 0.
- *         If the linked list is a palindrome - 1.
+ * Return: integer, 1 if list is a palindrome else 0
  */
 int is_palindrome(listint_t **head)
 {
-	listint_t *tmp, *rev, *mid;
-	size_t size = 0, i;
-
-	if (*head == NULL || (*head)->next == NULL)
-		return (1);
-
-	tmp = *head;
-	while (tmp)
-	{
-		size++;
-		tmp = tmp->next;
-	}
-
-	tmp = *head;
-	for (i = 0; i < (size / 2) - 1; i++)
-		tmp = tmp->next;
-
-	if ((size % 2) == 0 && tmp->n != tmp->next->n)
-		return (0);
-
-	tmp = tmp->next->next;
-	rev = reverse_listint(&tmp);
-	mid = rev;
-
-	tmp = *head;
-	while (rev)
-	{
-		if (tmp->n != rev->n)
-			return (0);
-		tmp = tmp->next;
-		rev = rev->next;
-	}
-	reverse_listint(&mid);
-
-	return (1);
+	return (palindrome(head, *head));
 }
